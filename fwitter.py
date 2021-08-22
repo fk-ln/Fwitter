@@ -10,6 +10,7 @@ import os
 import webbrowser
 import pyperclip
 import requests
+from selenium import webdriver
 
 consumer_token = config.API_KEY
 consumer_secret = config.API_KEY_SECRET
@@ -65,7 +66,7 @@ class App(tk.Frame):
             row=0, column=0, padx=10, pady=5, sticky=tk.W)
 
         # 送信用キーバインド
-        self.master.bind('<Command-Return>', self.post_tweet)
+        self.master.bind('<Control-Return>', self.post_tweet)
 
         # 新規ツイートフレーム
         self.frame_post = tk.LabelFrame(
@@ -259,7 +260,8 @@ class App(tk.Frame):
             self.status_text.set('テンプレート内容を入力してください')
 
     def post_tweet(self, event=None):  # ツイート送信ボタン
-        # タグが入力されてるとき本文に追加s
+        # タグが入力されてるとき本文に追加
+        self.tweet = self.post_text.get('1.0', tk.END)+'\n'
         if self.tag1_val.get() != '':
             self.tweet = self.tweet+'#'+self.tag1_val.get()+' '
         if self.tag2_val.get() != '':
@@ -268,7 +270,7 @@ class App(tk.Frame):
             self.tweet = self.tweet+'#'+self.tag3_val.get()+' '
 
         if len(self.file_name) == 0:
-            self.tweet = self.post_text.get('1.0', tk.END)+'\n'
+
             if not re.match('\s+', self.tweet):
                 # ツイート送信
                 try:
